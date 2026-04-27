@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — Peminjaman Barang</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.4s ease-out',
+            'slide-up': 'slideUp 0.4s ease-out',
+            'pulse-soft': 'pulseSoft 2s infinite',
+          },
+          keyframes: {
+            fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            slideUp: { '0%': { opacity: '0', transform: 'translateY(16px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            pulseSoft: { '0%,100%': { opacity: '1' }, '50%': { opacity: '0.6' } },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    .sidebar-link { transition: all 0.2s ease; }
+    .sidebar-link:hover { background: rgba(14,165,233,0.1); color: #0ea5e9; }
+    .sidebar-link.active { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; box-shadow: 0 4px 14px rgba(14,165,233,0.4); }
+    .sidebar-link.active svg { color: white; }
+    .card-hover { transition: all 0.25s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
+    .glass { background: rgba(255,255,255,0.9); backdrop-filter: blur(12px); }
+    .status-badge { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+    .table-row { transition: background 0.15s ease; }
+    .table-row:hover { background: #f8fafc; }
+    .overlay { backdrop-filter: blur(4px); }
+    .modal-box { animation: slideUp 0.3s ease-out; }
+    .search-glow:focus { box-shadow: 0 0 0 3px rgba(14,165,233,0.2); }
+    .btn-primary { background: linear-gradient(135deg, #0ea5e9, #0284c7); transition: all 0.2s; }
+    .btn-primary:hover { filter: brightness(1.08); box-shadow: 0 4px 14px rgba(14,165,233,0.4); }
+    .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); transition: all 0.2s; }
+    .btn-danger:hover { filter: brightness(1.08); box-shadow: 0 4px 14px rgba(239,68,68,0.4); }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex w-full">
+
+<div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300" onclick="toggleSidebar()"></div>
+
+<aside id="sidebar" class="fixed top-0 left-0 h-screen w-[80%] lg:w-[20%] bg-slate-900 z-50 flex flex-col shadow-2xl transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0">
+  
+  <div class="px-6 py-5 border-b border-slate-700/50 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl btn-primary flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+        </svg>
+      </div>
+      <div>
+        <p class="text-white font-bold text-sm leading-none">AssetTrack</p>
+        <p class="text-slate-400 text-xs mt-0.5">Peminjaman Barang</p>
+      </div>
+    </div>
+    <button class="lg:hidden w-8 h-8 rounded-lg bg-slate-800 text-slate-400 flex items-center justify-center hover:bg-slate-700 hover:text-white transition-colors" onclick="toggleSidebar()">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto w-full">
+    <p class="text-slate-500 text-xs font-semibold uppercase tracking-widest px-3 mb-2">Menu</p>
+    <a href="#" class="sidebar-link active flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium w-full" onclick="showSection('dashboard'); return false;">
+      <svg class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-width="2"/></svg>
+      <span class="truncate">Dashboard</span>
+    </a>
+    <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-3 rounded-xl text-slate-300 text-sm font-medium w-full" onclick="showSection('data'); return false;">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      <span class="truncate">Data Peminjaman</span>
+    </a>
+    <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-3 rounded-xl text-slate-300 text-sm font-medium w-full" onclick="showSection('pengaturan'); return false;">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>
+      <span class="truncate">Pengaturan API</span>
+    </a>
+  </nav>
+
+  <div class="px-4 py-4 border-t border-slate-700/50 w-full">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-lg shadow-brand-500/30">A</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-white text-sm font-medium truncate">Admin</p>
+        <p class="text-slate-500 text-xs truncate">Administrator</p>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<div class="flex flex-col w-full lg:w-[80%] min-h-screen transition-all duration-300 lg:ml-[20%] relative">
+
+  <header class="sticky top-0 z-20 glass border-b border-slate-200 px-4 lg:px-6 py-3.5 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <button class="lg:hidden p-2 rounded-lg hover:bg-slate-100" onclick="toggleSidebar()">
+        <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div>
+        <h1 id="pageTitle" class="text-slate-800 font-bold text-base lg:text-lg leading-none">Dashboard</h1>
+        <p class="text-slate-400 text-xs mt-0.5 hidden sm:block">Sistem Manajemen Peminjaman Aset</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span id="lastUpdated" class="text-slate-400 text-xs hidden md:block"></span>
+      <button onclick="refreshAll()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition-all">
+        <svg id="refreshIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <section id="section-dashboard" class="flex-1 p-4 lg:p-6 space-y-6 animate-fade-in w-full">
+    
+    <div id="apiBanner" class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+      <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      <div class="flex-1">
+        <p class="text-amber-800 font-semibold text-sm">URL Apps Script Belum Dikonfigurasi</p>
+        <p class="text-amber-600 text-xs mt-0.5">Silakan masuk ke <strong>Pengaturan API</strong> dan masukkan URL Google Apps Script kamu untuk memuat data.</p>
+      </div>
+      <button onclick="showSection('pengaturan')" class="text-amber-700 text-xs font-semibold bg-amber-100 hover:bg-amber-200 px-3 py-1.5 rounded-lg transition-all">Atur Sekarang</button>
+    </div>
+
+    <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 w-full">
+      <div class="card-hover bg-white rounded-2xl p-5 shadow-sm border border-slate-100 w-full">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-slate-500 text-xs font-medium uppercase tracking-wide">Total Peminjaman</p>
+            <p id="statTotal" class="text-3xl font-bold text-slate-800 mt-1.5">—</p>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center">
+            <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          </div>
+        </div>
+        <p class="text-xs text-slate-400 mt-3">Semua entri tercatat</p>
+      </div>
+
+      <div class="card-hover bg-white rounded-2xl p-5 shadow-sm border border-slate-100 w-full">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-slate-500 text-xs font-medium uppercase tracking-wide">Sedang Dipinjam</p>
+            <p id="statDipinjam" class="text-3xl font-bold text-orange-500 mt-1.5">—</p>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
+            <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+        </div>
+        <p class="text-xs text-slate-400 mt-3">Belum dikembalikan</p>
+      </div>
+
+      <div class="card-hover bg-white rounded-2xl p-5 shadow-sm border border-slate-100 w-full">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-slate-500 text-xs font-medium uppercase tracking-wide">Dikembalikan</p>
+            <p id="statDikembalikan" class="text-3xl font-bold text-emerald-500 mt-1.5">—</p>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
+            <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+        </div>
+        <p class="text-xs text-slate-400 mt-3">Selesai dipinjam</p>
+      </div>
+
+      <div class="card-hover bg-white rounded-2xl p-5 shadow-sm border border-slate-100 w-full">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-slate-500 text-xs font-medium uppercase tracking-wide">Terlambat</p>
+            <p id="statTerlambat" class="text-3xl font-bold text-red-500 mt-1.5">—</p>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+          </div>
+        </div>
+        <p class="text-xs text-slate-400 mt-3">Melewati batas waktu</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 w-full">
+        <h3 class="font-semibold text-slate-700 text-sm mb-4">Distribusi per Barang</h3>
+        <div class="relative h-56 w-full"><canvas id="chartBarang"></canvas></div>
+      </div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 w-full">
+        <h3 class="font-semibold text-slate-700 text-sm mb-4">Status Peminjaman</h3>
+        <div class="relative h-56 w-full"><canvas id="chartStatus"></canvas></div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden w-full">
+      <div class="px-5 py-4 flex items-center justify-between border-b border-slate-100 w-full">
+        <h3 class="font-semibold text-slate-700 text-sm">Peminjaman Terbaru</h3>
+        <button onclick="showSection('data')" class="text-brand-500 text-xs font-medium hover:underline">Lihat semua →</button>
+      </div>
+      <div id="tableRecent" class="overflow-x-auto w-full">
+        <div class="p-8 text-center text-slate-400 text-sm">Memuat data...</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="section-data" class="flex-1 p-4 lg:p-6 space-y-4 hidden animate-fade-in w-full">
+    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-wrap gap-3 items-end w-full">
+      <div class="flex-1 min-w-[160px]">
+        <label class="text-xs font-medium text-slate-500 block mb-1.5">Cari</label>
+        <input id="searchInput" type="text" placeholder="Nama, barang, peruntukan..." 
+          class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none search-glow focus:border-brand-400 transition-all" 
+          oninput="debounceSearch()" />
+      </div>
+      <div class="min-w-[130px]">
+        <label class="text-xs font-medium text-slate-500 block mb-1.5">Status</label>
+        <select id="filterStatus" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none search-glow focus:border-brand-400 transition-all" onchange="loadData()">
+          <option value="">Semua Status</option>
+          <option value="Dipinjam">Dipinjam</option>
+          <option value="Dikembalikan">Dikembalikan</option>
+          <option value="Terlambat">Terlambat</option>
+        </select>
+      </div>
+      <div class="min-w-[130px]">
+        <label class="text-xs font-medium text-slate-500 block mb-1.5">Barang</label>
+        <select id="filterBarang" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none search-glow focus:border-brand-400 transition-all" onchange="loadData()">
+          <option value="">Semua Barang</option>
+          <option value="Laptop">Laptop</option>
+          <option value="Kamera">Kamera</option>
+          <option value="Printer">Printer</option>
+          <option value="PC">PC</option>
+          <option value="SmartPhone">SmartPhone</option>
+        </select>
+      </div>
+      <button onclick="resetFilter()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition-all">Reset</button>
+      <button onclick="exportCSV()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium transition-all">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        Export CSV
+      </button>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden w-full">
+      <div id="dataTableWrapper" class="overflow-x-auto w-full">
+        <div class="p-10 text-center text-slate-400 text-sm">Memuat data...</div>
+      </div>
+      <div id="pagination" class="px-5 py-3 border-t border-slate-100 flex items-center justify-between gap-4 flex-wrap w-full">
+        <p id="paginationInfo" class="text-slate-400 text-xs"></p>
+        <div class="flex items-center gap-1.5">
+          <button id="prevBtn" onclick="changePage(-1)" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition-all flex items-center justify-center disabled:opacity-40" disabled>‹</button>
+          <span id="pageInfo" class="text-sm text-slate-600 font-medium px-2"></span>
+          <button id="nextBtn" onclick="changePage(1)" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition-all flex items-center justify-center disabled:opacity-40" disabled>›</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="section-pengaturan" class="flex-1 p-4 lg:p-6 hidden animate-fade-in w-full">
+    <div class="max-w-lg mx-auto space-y-4 w-full">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 w-full">
+        <h2 class="text-slate-800 font-bold text-lg mb-1">Pengaturan API</h2>
+        <p class="text-slate-400 text-sm mb-6">Masukkan URL Google Apps Script yang telah kamu deploy sebagai Web App.</p>
+
+        <div class="space-y-4 w-full">
+          <div>
+            <label class="text-xs font-semibold text-slate-600 block mb-1.5">URL Apps Script <span class="text-red-500">*</span></label>
+            <input id="apiUrlInput" type="url" placeholder="https://script.google.com/macros/s/YOUR_ID/exec" 
+              class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-mono focus:outline-none search-glow focus:border-brand-400 transition-all" />
+            <p class="text-slate-400 text-xs mt-1.5">URL didapat setelah deploy Apps Script sebagai Web App</p>
+          </div>
+          <button onclick="saveApiUrl()" class="btn-primary w-full text-white font-semibold py-2.5 rounded-xl text-sm">
+            Simpan & Test Koneksi
+          </button>
+          <div id="apiTestResult" class="hidden rounded-xl p-3.5 text-sm w-full"></div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 rounded-2xl p-6 text-slate-300 text-sm space-y-3 w-full">
+        <h3 class="text-white font-bold">📋 Cara Deploy Apps Script</h3>
+        <ol class="space-y-2 list-decimal list-inside text-xs leading-relaxed">
+          <li>Buka Google Sheets kamu → <strong class="text-brand-300">Extensions → Apps Script</strong></li>
+          <li>Paste kode dari file <code class="bg-slate-700 px-1.5 py-0.5 rounded text-brand-300">Code.gs</code> yang sudah disediakan</li>
+          <li>Klik <strong class="text-brand-300">Deploy → New deployment</strong></li>
+          <li>Pilih type: <strong class="text-brand-300">Web App</strong></li>
+          <li>Execute as: <strong class="text-brand-300">Me (email kamu)</strong></li>
+          <li>Who has access: <strong class="text-brand-300">Anyone</strong></li>
+          <li>Klik <strong class="text-brand-300">Deploy</strong> → copy URL yang muncul</li>
+          <li>Paste URL di kolom di atas → Simpan</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="modalStatus" class="fixed inset-0 bg-black/50 overlay z-50 hidden flex items-center justify-center p-4">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
+    <h3 class="font-bold text-slate-800 text-base mb-4">Update Status Peminjaman</h3>
+    <input type="hidden" id="modal_row" />
+    <div class="space-y-3">
+      <div>
+        <label class="text-xs font-semibold text-slate-600 block mb-1.5">Status</label>
+        <select id="modal_status" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none search-glow focus:border-brand-400 transition-all">
+          <option value="Dipinjam">Dipinjam</option>
+          <option value="Dikembalikan">Dikembalikan</option>
+          <option value="Terlambat">Terlambat</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-slate-600 block mb-1.5">Keterangan</label>
+        <textarea id="modal_keterangan" rows="2" placeholder="Catatan (opsional)" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none search-glow focus:border-brand-400 transition-all resize-none"></textarea>
+      </div>
+      <div class="flex gap-2.5 pt-1 w-full">
+        <button onclick="closeModal('modalStatus')" class="flex-1 w-1/2 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition-all">Batal</button>
+        <button onclick="submitStatusUpdate()" class="flex-1 w-1/2 btn-primary text-white py-2.5 rounded-xl text-sm font-semibold">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalDelete" class="fixed inset-0 bg-black/50 overlay z-50 hidden flex items-center justify-center p-4">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center">
+    <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+      <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+    </div>
+    <h3 class="font-bold text-slate-800 text-base mb-1">Hapus Data</h3>
+    <p class="text-slate-500 text-sm mb-5">Data ini akan dihapus permanen dari Google Sheets. Tindakan ini tidak bisa dibatalkan.</p>
+    <input type="hidden" id="delete_row" />
+    <div class="flex gap-2.5 w-full">
+      <button onclick="closeModal('modalDelete')" class="flex-1 w-1/2 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition-all">Batal</button>
+      <button onclick="confirmDelete()" class="flex-1 w-1/2 btn-danger text-white py-2.5 rounded-xl text-sm font-semibold">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<div id="modalDetail" class="fixed inset-0 bg-black/50 overlay z-50 hidden flex items-center justify-center p-4">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 max-h-[90vh] flex flex-col">
+    <div class="flex items-center justify-between mb-4 w-full flex-shrink-0 border-b border-slate-100 pb-3">
+      <h3 class="font-bold text-slate-800 text-base">Detail Peminjaman</h3>
+      <button onclick="closeModal('modalDetail')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-all">✕</button>
+    </div>
+    <div id="detailContent" class="space-y-3 text-sm w-full overflow-y-auto pr-2"></div>
+  </div>
+</div>
+
+<div id="toast" class="fixed bottom-5 right-5 z-50 hidden animate-slide-up">
+  <div id="toastBox" class="px-4 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2.5 max-w-xs">
+    <span id="toastIcon"></span>
+    <span id="toastMsg"></span>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// STATE & CONFIG
+// ============================================================
+let API_URL = localStorage.getItem('appsScriptUrl') || '';
+let currentPage = 1;
+let totalPages = 1;
+let currentData = [];
+let statsData = {};
+let searchTimeout = null;
+let chartBarang = null;
+let chartStatus = null;
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  const savedUrl = localStorage.getItem('appsScriptUrl');
+  if (savedUrl) {
+    document.getElementById('apiUrlInput').value = savedUrl;
+    API_URL = savedUrl;
+    document.getElementById('apiBanner').classList.add('hidden');
+  }
+
+  showSection('dashboard');
+  refreshAll();
+});
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showSection(name) {
+  ['dashboard','data','pengaturan'].forEach(s => {
+    const el = document.getElementById('section-' + s);
+    if (el) el.classList.add('hidden');
+  });
+  const target = document.getElementById('section-' + name);
+  if (target) {
+    target.classList.remove('hidden');
+    target.classList.add('animate-fade-in');
+  }
+
+  document.querySelectorAll('.sidebar-link').forEach(l => {
+    l.classList.remove('active');
+    l.classList.add('text-slate-300');
+  });
+  const links = document.querySelectorAll('.sidebar-link');
+  const sectionMap = { dashboard: 0, data: 1, pengaturan: 2 };
+  const idx = sectionMap[name];
+  if (links[idx]) {
+    links[idx].classList.add('active');
+    links[idx].classList.remove('text-slate-300');
+  }
+
+  const titles = { dashboard: 'Dashboard', data: 'Data Peminjaman', pengaturan: 'Pengaturan API' };
+  document.getElementById('pageTitle').textContent = titles[name] || '';
+
+  if (name === 'data') loadData();
+  if (name === 'dashboard') refreshAll();
+
+  if (window.innerWidth < 1024) toggleSidebar(true);
+}
+
+function toggleSidebar(forceClose) {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  
+  const isHidden = sb.classList.contains('-translate-x-full');
+  
+  if (forceClose === true || !isHidden) {
+    sb.classList.add('-translate-x-full');
+    ov.classList.add('hidden');
+  } else {
+    sb.classList.remove('-translate-x-full');
+    ov.classList.remove('hidden');
+  }
+}
+
+// ============================================================
+// API CALLS
+// ============================================================
+async function fetchAPI(params = {}) {
+  if (!API_URL) { showToast('URL Apps Script belum dikonfigurasi', 'error'); return null; }
+  const url = new URL(API_URL);
+  Object.entries(params).forEach(([k,v]) => { if (v !== undefined && v !== '') url.searchParams.set(k, v); });
+  try {
+    const res = await fetch(url.toString());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.json();
+  } catch(e) {
+    showToast('Gagal memuat data: ' + e.message, 'error');
+    return null;
+  }
+}
+
+async function postAPI(body) {
+  if (!API_URL) { showToast('URL Apps Script belum dikonfigurasi', 'error'); return null; }
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.json();
+  } catch(e) {
+    showToast('Gagal: ' + e.message, 'error');
+    return null;
+  }
+}
+
+// ============================================================
+// REFRESH ALL
+// ============================================================
+async function refreshAll() {
+  if (!API_URL) return;
+  const icon = document.getElementById('refreshIcon');
+  icon.classList.add('animate-spin');
+  await Promise.all([loadStats(), loadRecent()]);
+  icon.classList.remove('animate-spin');
+  document.getElementById('lastUpdated').textContent = 'Update: ' + new Date().toLocaleTimeString('id');
+}
+
+// ============================================================
+// STATS
+// ============================================================
+async function loadStats() {
+  const res = await fetchAPI({ action: 'getStats' });
+  if (!res || !res.success) return;
+  const s = res.stats;
+  statsData = s;
+  
+  animateNumber('statTotal', s.total);
+  animateNumber('statDipinjam', s.dipinjam);
+  animateNumber('statDikembalikan', s.dikembalikan);
+  animateNumber('statTerlambat', s.terlambat);
+
+  renderChartBarang(s.byBarang);
+  renderChartStatus(s);
+}
+
+function animateNumber(id, target) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const start = parseInt(el.textContent) || 0;
+  const duration = 500;
+  const startTime = performance.now();
+  const update = (now) => {
+    const progress = Math.min((now - startTime) / duration, 1);
+    el.textContent = Math.round(start + (target - start) * progress);
+    if (progress < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+function renderChartBarang(byBarang) {
+  const ctx = document.getElementById('chartBarang');
+  if (!ctx) return;
+  if (chartBarang) chartBarang.destroy();
+  const labels = Object.keys(byBarang);
+  const values = Object.values(byBarang);
+  const colors = ['#0ea5e9','#f59e0b','#10b981','#8b5cf6','#ef4444'];
+  chartBarang = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{ data: values, backgroundColor: colors.slice(0, labels.length), borderWidth: 2, borderColor: '#fff' }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'right', labels: { font: { size: 11 }, padding: 12 } } }
+    }
+  });
+}
+
+function renderChartStatus(s) {
+  const ctx = document.getElementById('chartStatus');
+  if (!ctx) return;
+  if (chartStatus) chartStatus.destroy();
+  chartStatus = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Dipinjam', 'Dikembalikan', 'Terlambat'],
+      datasets: [{
+        data: [s.dipinjam, s.dikembalikan, s.terlambat],
+        backgroundColor: ['#f59e0b','#10b981','#ef4444'],
+        borderRadius: 8, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
+    }
+  });
+}
+
+// ============================================================
+// RECENT TABLE
+// ============================================================
+async function loadRecent() {
+  const res = await fetchAPI({ action: 'getData', limit: 5, page: 1 });
+  const wrapper = document.getElementById('tableRecent');
+  if (!res || !res.success || !res.data.length) {
+    wrapper.innerHTML = '<div class="p-8 text-center text-slate-400 text-sm">Belum ada data</div>';
+    return;
+  }
+  wrapper.innerHTML = buildTable(res.data, true);
+}
+
+// ============================================================
+// FULL DATA TABLE
+// ============================================================
+async function loadData() {
+  const search = document.getElementById('searchInput').value;
+  const status = document.getElementById('filterStatus').value;
+  const barang = document.getElementById('filterBarang').value;
+  const wrapper = document.getElementById('dataTableWrapper');
+  wrapper.innerHTML = '<div class="p-10 text-center w-full"><div class="inline-block w-6 h-6 border-2 border-brand-400 border-t-transparent rounded-full animate-spin"></div></div>';
+
+  const res = await fetchAPI({ action: 'getData', search, status, barang, page: currentPage, limit: 15 });
+  if (!res || !res.success) { wrapper.innerHTML = '<div class="p-10 text-center text-slate-400 text-sm w-full">Gagal memuat data</div>'; return; }
+
+  currentData = res.data;
+  totalPages = res.totalPages || 1;
+
+  if (!res.data.length) {
+    wrapper.innerHTML = '<div class="p-10 text-center text-slate-400 text-sm w-full">Tidak ada data ditemukan</div>';
+    document.getElementById('paginationInfo').textContent = '';
+    document.getElementById('pageInfo').textContent = '';
+    return;
+  }
+
+  wrapper.innerHTML = buildTable(res.data, false);
+  document.getElementById('paginationInfo').textContent = `${res.total} data • Halaman ${res.page} dari ${res.totalPages}`;
+  document.getElementById('pageInfo').textContent = `${res.page} / ${res.totalPages}`;
+  document.getElementById('prevBtn').disabled = currentPage <= 1;
+  document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+}
+
+function buildTable(data, compact) {
+  const cols = compact
+    ? ['Nama Peminjam Barang','Barang Yang Di pinjam','Tanggal Peminjaman Asset','Status']
+    : ['Nama Peminjam Barang','Barang Yang Di pinjam','Di Peruntukan','Tanggal Peminjaman Asset','Status','Keterangan'];
+
+  let html = `<table class="w-full text-sm"><thead><tr class="bg-slate-50 border-b border-slate-100">`;
+  html += `<th class="text-left px-4 py-3 text-slate-500 font-semibold text-xs uppercase tracking-wide w-[5%]">#</th>`;
+  cols.forEach(c => {
+    html += `<th class="text-left px-4 py-3 text-slate-500 font-semibold text-xs uppercase tracking-wide whitespace-nowrap">${c}</th>`;
+  });
+  if (!compact) html += `<th class="text-center px-4 py-3 text-slate-500 font-semibold text-xs uppercase tracking-wide">Aksi</th>`;
+  html += `</tr></thead><tbody>`;
+
+  data.forEach((row, i) => {
+    const status = row['Status'] || 'Dipinjam';
+    const statusClass = status === 'Dikembalikan' ? 'bg-emerald-50 text-emerald-700' : status === 'Terlambat' ? 'bg-red-50 text-red-700' : 'bg-orange-50 text-orange-700';
+    const tgl = row['Tanggal Peminjaman Asset'] ? new Date(row['Tanggal Peminjaman Asset']).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+    const rowIdx = row._rowIndex;
+
+    html += `<tr class="table-row border-b border-slate-50 cursor-pointer w-full" onclick='showDetail(${JSON.stringify(JSON.stringify(row))})'>`;
+    html += `<td class="px-4 py-3 text-slate-400 font-mono text-xs">${i+1}</td>`;
+    cols.forEach(c => {
+      if (c === 'Status') {
+        html += `<td class="px-4 py-3"><span class="status-badge px-2.5 py-1 rounded-full ${statusClass}">${status}</span></td>`;
+      } else if (c === 'Tanggal Peminjaman Asset') {
+        html += `<td class="px-4 py-3 text-slate-600 whitespace-nowrap">${tgl}</td>`;
+      } else {
+        const val = row[c] || '—';
+        html += `<td class="px-4 py-3 text-slate-700 max-w-[160px] truncate">${val}</td>`;
+      }
+    });
+    if (!compact) {
+      html += `<td class="px-4 py-3 whitespace-nowrap" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-center gap-1.5">
+          <button onclick="openStatusModal(${rowIdx},'${status}')" title="Update Status" class="w-7 h-7 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-600 flex items-center justify-center transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+          </button>
+          <button onclick="openDeleteModal(${rowIdx})" title="Hapus" class="w-7 h-7 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </div>
+      </td>`;
+    }
+    html += `</tr>`;
+  });
+
+  html += `</tbody></table>`;
+  return html;
+}
+
+// ============================================================
+// PAGINATION & SEARCH
+// ============================================================
+function changePage(dir) {
+  currentPage = Math.max(1, Math.min(totalPages, currentPage + dir));
+  loadData();
+}
+
+function debounceSearch() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => { currentPage = 1; loadData(); }, 400);
+}
+
+function resetFilter() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('filterStatus').value = '';
+  document.getElementById('filterBarang').value = '';
+  currentPage = 1;
+  loadData();
+}
+
+// ============================================================
+// MODALS LOGIC
+// ============================================================
+function openStatusModal(rowIdx, currentStatus) {
+  document.getElementById('modal_row').value = rowIdx;
+  document.getElementById('modal_status').value = currentStatus;
+  document.getElementById('modal_keterangan').value = '';
+  openModal('modalStatus');
+}
+
+async function submitStatusUpdate() {
+  const row = document.getElementById('modal_row').value;
+  const status = document.getElementById('modal_status').value;
+  const keterangan = document.getElementById('modal_keterangan').value;
+  const res = await postAPI({ action: 'updateStatus', row, status, keterangan });
+  if (res && res.success) {
+    showToast('Status berhasil diperbarui', 'success');
+    closeModal('modalStatus');
+    loadData();
+    loadStats();
+  } else {
+    showToast(res?.message || 'Gagal update status', 'error');
+  }
+}
+
+function openDeleteModal(rowIdx) {
+  document.getElementById('delete_row').value = rowIdx;
+  openModal('modalDelete');
+}
+
+async function confirmDelete() {
+  const row = document.getElementById('delete_row').value;
+  const res = await postAPI({ action: 'deleteRow', row });
+  if (res && res.success) {
+    showToast('Data berhasil dihapus', 'success');
+    closeModal('modalDelete');
+    loadData();
+    loadStats();
+  } else {
+    showToast(res?.message || 'Gagal menghapus data', 'error');
+  }
+}
+
+// ============================================================
+// SHOW DETAIL (DENGAN RENDER GAMBAR)
+// ============================================================
+function showDetail(rowStr) {
+  let row;
+  try { row = JSON.parse(rowStr); } catch(e) { return; }
+  const skip = ['_rowIndex'];
+  const status = row['Status'] || 'Dipinjam';
+  const statusClass = status === 'Dikembalikan' ? 'bg-emerald-50 text-emerald-700' : status === 'Terlambat' ? 'bg-red-50 text-red-700' : 'bg-orange-50 text-orange-700';
+  
+  let textHtml = '';
+  let imageHtml = '';
+
+  Object.entries(row).forEach(([k, v]) => {
+    if (skip.includes(k) || !k || !v) return;
+    let val = v;
+    
+    // Deteksi apakah field ini mengandung kata kunci foto/gambar atau URL-nya adalah gambar
+    const keyLower = k.toLowerCase();
+    const isImageKey = keyLower.includes('foto') || keyLower.includes('gambar') || keyLower.includes('bukti') || keyLower.includes('dokumen');
+    const isImageUrl = typeof v === 'string' && (
+      v.match(/\.(jpeg|jpg|gif|png|webp)(\?|$|#)/i) ||
+      v.startsWith('data:image/') ||
+      v.includes('drive.google.com') ||
+      v.includes('googleusercontent.com') ||
+      v.includes('storage.googleapis.com') ||
+      isImageKey
+    );
+
+    // Jika ini adalah gambar, buat tag <img>
+    if (isImageUrl && typeof v === 'string') {
+      let imgSrc = v;
+      let openUrl = v;
+      let fileId = null;
+
+      // ── Google Drive: ekstrak file ID ──────────────────────────
+      // Format 1: https://drive.google.com/open?id=FILE_ID
+      if (v.includes('drive.google.com/open?id=')) {
+        const m = v.match(/[?&]id=([^&]+)/);
+        if (m) fileId = m[1];
+      }
+      // Format 2: https://drive.google.com/file/d/FILE_ID/...
+      else if (v.includes('drive.google.com/file/d/')) {
+        const m = v.match(/file\/d\/([^\/\?]+)/);
+        if (m) fileId = m[1];
+      }
+      // Format 3: https://drive.google.com/uc?id=FILE_ID
+      else if (v.includes('drive.google.com/uc') || v.includes('drive.google.com/thumbnail')) {
+        const m = v.match(/[?&]id=([^&]+)/);
+        if (m) fileId = m[1];
+      }
+      // Format 4: share link  https://drive.google.com/...?usp=sharing  (sudah ada id di path)
+      else if (v.includes('drive.google.com') && v.includes('usp=sharing')) {
+        const m = v.match(/\/d\/([^\/\?]+)/);
+        if (m) fileId = m[1];
+      }
+
+      if (fileId) {
+        // Gunakan thumbnail endpoint — tidak kena CORS, selalu bisa di-load
+        imgSrc  = `https://drive.google.com/thumbnail?id=${fileId}&sz=w640`;
+        openUrl = `https://drive.google.com/file/d/${fileId}/view`;
+      }
+
+      // ── Render ─────────────────────────────────────────────────
+      const uniqueId = 'img_' + Math.random().toString(36).substr(2, 9);
+      imageHtml += `<div class="mt-5 mb-2">
+         <span class="text-slate-500 font-semibold text-xs uppercase tracking-wide block mb-2">${k}</span>
+         <a href="${openUrl}" target="_blank" rel="noopener noreferrer" title="Klik untuk melihat ukuran penuh">
+           <img id="${uniqueId}"
+                src="${imgSrc}"
+                alt="${k}"
+                crossorigin="anonymous"
+                referrerpolicy="no-referrer"
+                class="w-full h-auto max-h-64 object-cover rounded-xl border border-slate-200 shadow-sm hover:opacity-90 transition-opacity cursor-pointer"
+                onerror="handleImgError(this, '${imgSrc}', '${fileId || ''}', '${openUrl}')"/>
+         </a>
+         <p class="text-xs text-slate-400 mt-1">🔗 <a href="${openUrl}" target="_blank" rel="noopener noreferrer" class="underline hover:text-brand-500">Buka di tab baru</a></p>
+      </div>`;
+      return; // Skip teks biasa untuk field ini
+    }
+
+    // Format badge untuk status
+    if (k === 'Status') {
+      val = `<span class="status-badge px-2 py-0.5 rounded-full ${statusClass}">${v}</span>`;
+    } 
+    // Format tanggal
+    else if (k === 'Timestamp' || k === 'Tanggal Peminjaman Asset' || k === 'Tanggal Kembali') {
+      val = v ? new Date(v).toLocaleString('id-ID') : '—';
+    }
+
+    // Gabungkan baris informasi
+    textHtml += `<div class="flex gap-3 py-2 border-b border-slate-50 last:border-0 w-full">
+      <span class="text-slate-400 text-xs w-[40%] flex-shrink-0 pt-0.5">${k}</span>
+      <span class="text-slate-700 font-medium text-xs flex-1 break-words">${val}</span>
+    </div>`;
+  });
+
+  // Render teks terlebih dahulu, lalu gambar di bagian bawah
+  document.getElementById('detailContent').innerHTML = textHtml + imageHtml;
+  openModal('modalDetail');
+}
+
+function openModal(id) {
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  el.classList.add('flex');
+}
+
+function closeModal(id) {
+  const el = document.getElementById(id);
+  el.classList.add('hidden');
+  el.classList.remove('flex');
+}
+
+// ============================================================
+// PENGATURAN API
+// ============================================================
+async function saveApiUrl() {
+  const url = document.getElementById('apiUrlInput').value.trim();
+  const resultEl = document.getElementById('apiTestResult');
+  if (!url) {
+    resultEl.className = 'block rounded-xl bg-red-50 text-red-700 text-sm p-3.5 border border-red-200';
+    resultEl.textContent = 'Masukkan URL terlebih dahulu';
+    return;
+  }
+  resultEl.className = 'block rounded-xl bg-slate-50 text-slate-600 text-sm p-3.5';
+  resultEl.textContent = '⏳ Menguji koneksi...';
+  
+  try {
+    const testUrl = new URL(url);
+    testUrl.searchParams.set('action', 'getStats');
+    const res = await fetch(testUrl.toString());
+    const data = await res.json();
+    if (data.success) {
+      localStorage.setItem('appsScriptUrl', url);
+      API_URL = url;
+      document.getElementById('apiBanner').classList.add('hidden');
+      resultEl.className = 'block rounded-xl bg-emerald-50 text-emerald-700 text-sm p-3.5 border border-emerald-200';
+      resultEl.textContent = '✓ Koneksi berhasil! URL disimpan. Data akan dimuat otomatis.';
+      showToast('Koneksi berhasil!', 'success');
+      setTimeout(() => refreshAll(), 800);
+    } else {
+      throw new Error(data.message || 'Response tidak valid');
+    }
+  } catch(e) {
+    resultEl.className = 'block rounded-xl bg-red-50 text-red-700 text-sm p-3.5 border border-red-200';
+    resultEl.textContent = '✗ Koneksi gagal: ' + e.message + '. Pastikan URL benar dan Apps Script sudah di-deploy.';
+  }
+}
+
+// ============================================================
+// EXPORT CSV
+// ============================================================
+async function exportCSV() {
+  const search = document.getElementById('searchInput').value;
+  const status = document.getElementById('filterStatus').value;
+  const barang = document.getElementById('filterBarang').value;
+  const res = await fetchAPI({ action: 'getData', search, status, barang, limit: 9999, page: 1 });
+  if (!res || !res.data.length) { showToast('Tidak ada data untuk di-export', 'error'); return; }
+  
+  const skip = ['_rowIndex'];
+  const keys = Object.keys(res.data[0]).filter(k => !skip.includes(k));
+  let csv = keys.join(',') + '\n';
+  res.data.forEach(row => {
+    csv += keys.map(k => `"${(row[k] || '').toString().replace(/"/g,'""')}"`).join(',') + '\n';
+  });
+  
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `peminjaman_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  showToast('CSV berhasil di-export', 'success');
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, type = 'success') {
+  const toast = document.getElementById('toast');
+  const box = document.getElementById('toastBox');
+  const icon = document.getElementById('toastIcon');
+  const msgEl = document.getElementById('toastMsg');
+
+  msgEl.textContent = msg;
+  if (type === 'success') {
+    box.className = 'px-4 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2.5 max-w-xs bg-emerald-600 text-white';
+    icon.textContent = '✓';
+  } else {
+    box.className = 'px-4 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2.5 max-w-xs bg-red-600 text-white';
+    icon.textContent = '✕';
+  }
+
+  toast.classList.remove('hidden');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.add('hidden'), 3500);
+}
+
+// ============================================================
+// HELPER: FALLBACK GAMBAR (URUTAN PRIORITAS)
+// ============================================================
+function handleImgError(imgEl, originalSrc, fileId, openUrl) {
+  // Cegah infinite loop
+  if (imgEl._fallbackAttempt === undefined) imgEl._fallbackAttempt = 0;
+  imgEl._fallbackAttempt++;
+
+  if (fileId) {
+    if (imgEl._fallbackAttempt === 1) {
+      // Coba uc?export=view (metode lama)
+      imgEl.src = `https://drive.google.com/uc?export=view&id=${fileId}`;
+      return;
+    }
+    if (imgEl._fallbackAttempt === 2) {
+      // Coba thumbnail ukuran lebih kecil
+      imgEl.src = `https://drive.google.com/thumbnail?id=${fileId}&sz=w320`;
+      return;
+    }
+  }
+
+  // Semua fallback gagal → tampilkan pesan dengan link manual
+  const container = imgEl.closest('a') ? imgEl.closest('a').parentElement : imgEl.parentElement;
+  if (container) {
+    container.innerHTML = `
+      <div class="flex flex-col items-start gap-2 bg-slate-50 border border-dashed border-slate-300 rounded-xl p-4">
+        <p class="text-xs text-slate-500">⚠️ Gambar tidak dapat dimuat langsung karena pembatasan sharing Google Drive.</p>
+        <a href="${openUrl || originalSrc}" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-brand-800 underline">
+          📂 Klik di sini untuk membuka gambar
+        </a>
+      </div>`;
+  }
+}
+
+// Close modal on overlay click
+document.querySelectorAll('#modalStatus, #modalDelete, #modalDetail').forEach(modal => {
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal(modal.id);
+  });
+});
+</script>
+</body>
+</html>
