@@ -71,8 +71,10 @@
 </head>
 <body class="bg-slate-50 min-h-screen flex w-full">
 
+<!-- SIDEBAR OVERLAY (mobile) -->
 <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300" onclick="toggleSidebar()"></div>
 
+<!-- SIDEBAR -->
 <aside id="sidebar" class="fixed top-0 left-0 h-screen w-[80%] lg:w-[20%] bg-slate-900 z-50 flex flex-col shadow-2xl transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0">
   
   <div class="px-6 py-5 border-b border-slate-700/50 flex items-center justify-between">
@@ -95,17 +97,18 @@
   <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto w-full">
     <p class="text-slate-500 text-xs font-semibold uppercase tracking-widest px-3 mb-2">Menu</p>
     <a href="#" class="sidebar-link active flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium w-full" onclick="showSection('dashboard'); return false;">
-      <svg class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-width="2"/></svg>
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-width="2"/></svg>
       <span class="truncate">Dashboard</span>
     </a>
     <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-3 rounded-xl text-slate-300 text-sm font-medium w-full" onclick="showSection('data'); return false;">
       <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
       <span class="truncate">Data Peminjaman</span>
     </a>
-    <!-- <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-3 rounded-xl text-slate-300 text-sm font-medium w-full" onclick="showSection('pengaturan'); return false;">
+    <!-- FIX: Menu Pengaturan di-uncomment agar bisa diakses -->
+    <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-3 rounded-xl text-slate-300 text-sm font-medium w-full" onclick="showSection('pengaturan'); return false;">
       <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>
       <span class="truncate">Pengaturan API</span>
-    </a> -->
+    </a>
   </nav>
 
   <div class="px-4 py-4 border-t border-slate-700/50 w-full">
@@ -119,8 +122,10 @@
   </div>
 </aside>
 
+<!-- MAIN CONTENT -->
 <div class="flex flex-col w-full lg:w-[80%] min-h-screen transition-all duration-300 lg:ml-[20%] relative">
 
+  <!-- HEADER -->
   <header class="sticky top-0 z-20 glass border-b border-slate-200 px-4 lg:px-6 py-3.5 flex items-center justify-between gap-4">
     <div class="flex items-center gap-3">
       <button class="lg:hidden p-2 rounded-lg hover:bg-slate-100" onclick="toggleSidebar()">
@@ -140,23 +145,39 @@
     </div>
   </header>
 
+  <!-- ===== DASHBOARD SECTION ===== -->
   <section id="section-dashboard" class="flex-1 p-4 lg:p-6 space-y-6 animate-fade-in w-full">
     
-    <div id="apiBanner" class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
-      <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-      <div class="flex-1">
-        <p class="text-amber-800 font-semibold text-sm">URL Apps Script Belum Dikonfigurasi</p>
-        <p class="text-amber-600 text-xs mt-0.5">Silakan masuk ke <strong>Pengaturan API</strong> dan masukkan URL Google Apps Script kamu untuk memuat data.</p>
+    <!-- FIX: Banner sekarang punya form inline + tombol ke pengaturan -->
+    <div id="apiBanner" class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+      <div class="flex items-start gap-3 mb-3">
+        <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <div class="flex-1">
+          <p class="text-amber-800 font-semibold text-sm">URL Apps Script Belum Dikonfigurasi</p>
+          <p class="text-amber-600 text-xs mt-0.5">Masukkan URL Google Apps Script kamu di bawah ini atau pergi ke menu <strong>Pengaturan API</strong>.</p>
+        </div>
       </div>
-      <button onclick="showSection('pengaturan')" class="text-amber-700 text-xs font-semibold bg-amber-100 hover:bg-amber-200 px-3 py-1.5 rounded-lg transition-all">Atur Sekarang</button>
+      <!-- FIX: Inline URL input langsung di banner -->
+      <div class="flex gap-2 flex-wrap">
+        <input id="bannerApiInput" type="url" placeholder="https://script.google.com/macros/s/AKfycbzdKjSrL3pmpNwuQOxb7Bnk95v5tttO6KkOsO_2aIYvYIIrIUhvN-FaWxJMD49uZ3x1cg/exec"
+          class="flex-1 min-w-[200px] border border-amber-300 bg-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 font-mono transition-all" />
+        <button onclick="saveBannerUrl()" class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold transition-all whitespace-nowrap">
+          Simpan & Muat Data
+        </button>
+        <button onclick="showSection('pengaturan')" class="px-4 py-2 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-700 text-sm font-medium transition-all whitespace-nowrap">
+          Pengaturan Lengkap
+        </button>
+      </div>
     </div>
 
+    <!-- STAT CARDS -->
     <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 w-full">
       <div class="card-hover bg-white rounded-2xl p-5 shadow-sm border border-slate-100 w-full">
         <div class="flex items-start justify-between">
           <div>
             <p class="text-slate-500 text-xs font-medium uppercase tracking-wide">Total Peminjaman</p>
-            <p id="statTotal" class="text-3xl font-bold text-slate-800 mt-1.5">—</p>
+            <!-- FIX: Default 0 bukan — -->
+            <p id="statTotal" class="text-3xl font-bold text-slate-800 mt-1.5">0</p>
           </div>
           <div class="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center">
             <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
@@ -169,7 +190,7 @@
         <div class="flex items-start justify-between">
           <div>
             <p class="text-slate-500 text-xs font-medium uppercase tracking-wide">Sedang Dipinjam</p>
-            <p id="statDipinjam" class="text-3xl font-bold text-orange-500 mt-1.5">—</p>
+            <p id="statDipinjam" class="text-3xl font-bold text-orange-500 mt-1.5">0</p>
           </div>
           <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
             <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -182,7 +203,7 @@
         <div class="flex items-start justify-between">
           <div>
             <p class="text-slate-500 text-xs font-medium uppercase tracking-wide">Dikembalikan</p>
-            <p id="statDikembalikan" class="text-3xl font-bold text-emerald-500 mt-1.5">—</p>
+            <p id="statDikembalikan" class="text-3xl font-bold text-emerald-500 mt-1.5">0</p>
           </div>
           <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
             <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -195,7 +216,7 @@
         <div class="flex items-start justify-between">
           <div>
             <p class="text-slate-500 text-xs font-medium uppercase tracking-wide">Terlambat</p>
-            <p id="statTerlambat" class="text-3xl font-bold text-red-500 mt-1.5">—</p>
+            <p id="statTerlambat" class="text-3xl font-bold text-red-500 mt-1.5">0</p>
           </div>
           <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
             <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
@@ -205,28 +226,39 @@
       </div>
     </div>
 
+    <!-- CHARTS -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
       <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 w-full">
         <h3 class="font-semibold text-slate-700 text-sm mb-4">Distribusi per Barang</h3>
-        <div class="relative h-56 w-full"><canvas id="chartBarang"></canvas></div>
+        <!-- FIX: Placeholder saat belum ada data -->
+        <div id="chartBarangWrap" class="relative h-56 w-full">
+          <canvas id="chartBarang"></canvas>
+          <div id="chartBarangEmpty" class="absolute inset-0 flex items-center justify-center text-slate-300 text-sm">Belum ada data</div>
+        </div>
       </div>
       <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 w-full">
         <h3 class="font-semibold text-slate-700 text-sm mb-4">Status Peminjaman</h3>
-        <div class="relative h-56 w-full"><canvas id="chartStatus"></canvas></div>
+        <div id="chartStatusWrap" class="relative h-56 w-full">
+          <canvas id="chartStatus"></canvas>
+          <div id="chartStatusEmpty" class="absolute inset-0 flex items-center justify-center text-slate-300 text-sm">Belum ada data</div>
+        </div>
       </div>
     </div>
 
+    <!-- RECENT TABLE -->
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden w-full">
       <div class="px-5 py-4 flex items-center justify-between border-b border-slate-100 w-full">
         <h3 class="font-semibold text-slate-700 text-sm">Peminjaman Terbaru</h3>
         <button onclick="showSection('data')" class="text-brand-500 text-xs font-medium hover:underline">Lihat semua →</button>
       </div>
       <div id="tableRecent" class="overflow-x-auto w-full">
-        <div class="p-8 text-center text-slate-400 text-sm">Memuat data...</div>
+        <!-- FIX: Pesan berbeda tergantung status API -->
+        <div id="tableRecentMsg" class="p-8 text-center text-slate-400 text-sm">Konfigurasi URL Apps Script terlebih dahulu untuk melihat data.</div>
       </div>
     </div>
   </section>
 
+  <!-- ===== DATA PEMINJAMAN SECTION ===== -->
   <section id="section-data" class="flex-1 p-4 lg:p-6 space-y-4 hidden animate-fade-in w-full">
     <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-wrap gap-3 items-end w-full">
       <div class="flex-1 min-w-[160px]">
@@ -264,7 +296,7 @@
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden w-full">
       <div id="dataTableWrapper" class="overflow-x-auto w-full">
-        <div class="p-10 text-center text-slate-400 text-sm">Memuat data...</div>
+        <div class="p-10 text-center text-slate-400 text-sm">Konfigurasi URL Apps Script terlebih dahulu.</div>
       </div>
       <div id="pagination" class="px-5 py-3 border-t border-slate-100 flex items-center justify-between gap-4 flex-wrap w-full">
         <p id="paginationInfo" class="text-slate-400 text-xs"></p>
@@ -277,6 +309,7 @@
     </div>
   </section>
 
+  <!-- ===== PENGATURAN SECTION ===== -->
   <section id="section-pengaturan" class="flex-1 p-4 lg:p-6 hidden animate-fade-in w-full">
     <div class="max-w-lg mx-auto space-y-4 w-full">
       <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 w-full">
@@ -286,15 +319,21 @@
         <div class="space-y-4 w-full">
           <div>
             <label class="text-xs font-semibold text-slate-600 block mb-1.5">URL Apps Script <span class="text-red-500">*</span></label>
-            <input id="apiUrlInput" type="url" placeholder="https://script.google.com/macros/s/AKfycbw8AgKTO70lI1YXlHj2V9TO6YN4PjGe_o36m-WBbSZbTWJeQXC3mm-GNpFvVTr-3mIpfw/exec" 
+            <input id="apiUrlInput" type="url" placeholder="https://script.google.com/macros/s/.../exec" 
               class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-mono focus:outline-none search-glow focus:border-brand-400 transition-all" />
             <p class="text-slate-400 text-xs mt-1.5">URL didapat setelah deploy Apps Script sebagai Web App</p>
           </div>
           <button onclick="saveApiUrl()" class="btn-primary w-full text-white font-semibold py-2.5 rounded-xl text-sm">
-            Simpan & Test Koneksi
+            Simpan &amp; Test Koneksi
           </button>
           <div id="apiTestResult" class="hidden rounded-xl p-3.5 text-sm w-full"></div>
         </div>
+      </div>
+
+      <!-- Status koneksi saat ini -->
+      <div id="currentApiStatus" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-sm text-emerald-700 flex items-center gap-2">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span id="currentApiUrl" class="font-mono text-xs break-all"></span>
       </div>
 
       <div class="bg-slate-900 rounded-2xl p-6 text-slate-300 text-sm space-y-3 w-full">
@@ -315,6 +354,7 @@
 
 </div>
 
+<!-- MODAL: Update Status -->
 <div id="modalStatus" class="fixed inset-0 bg-black/50 overlay z-50 hidden flex items-center justify-center p-4">
   <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
     <h3 class="font-bold text-slate-800 text-base mb-4">Update Status Peminjaman</h3>
@@ -333,13 +373,14 @@
         <textarea id="modal_keterangan" rows="2" placeholder="Catatan (opsional)" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none search-glow focus:border-brand-400 transition-all resize-none"></textarea>
       </div>
       <div class="flex gap-2.5 pt-1 w-full">
-        <button onclick="closeModal('modalStatus')" class="flex-1 w-1/2 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition-all">Batal</button>
-        <button onclick="submitStatusUpdate()" class="flex-1 w-1/2 btn-primary text-white py-2.5 rounded-xl text-sm font-semibold">Simpan</button>
+        <button onclick="closeModal('modalStatus')" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition-all">Batal</button>
+        <button onclick="submitStatusUpdate()" class="flex-1 btn-primary text-white py-2.5 rounded-xl text-sm font-semibold">Simpan</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- MODAL: Delete Confirm -->
 <div id="modalDelete" class="fixed inset-0 bg-black/50 overlay z-50 hidden flex items-center justify-center p-4">
   <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center">
     <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
@@ -349,12 +390,13 @@
     <p class="text-slate-500 text-sm mb-5">Data ini akan dihapus permanen dari Google Sheets. Tindakan ini tidak bisa dibatalkan.</p>
     <input type="hidden" id="delete_row" />
     <div class="flex gap-2.5 w-full">
-      <button onclick="closeModal('modalDelete')" class="flex-1 w-1/2 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition-all">Batal</button>
-      <button onclick="confirmDelete()" class="flex-1 w-1/2 btn-danger text-white py-2.5 rounded-xl text-sm font-semibold">Hapus</button>
+      <button onclick="closeModal('modalDelete')" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition-all">Batal</button>
+      <button onclick="confirmDelete()" class="flex-1 btn-danger text-white py-2.5 rounded-xl text-sm font-semibold">Hapus</button>
     </div>
   </div>
 </div>
 
+<!-- MODAL: Detail -->
 <div id="modalDetail" class="fixed inset-0 bg-black/50 overlay z-50 hidden flex items-center justify-center p-4">
   <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 max-h-[90vh] flex flex-col">
     <div class="flex items-center justify-between mb-4 w-full flex-shrink-0 border-b border-slate-100 pb-3">
@@ -365,6 +407,7 @@
   </div>
 </div>
 
+<!-- TOAST -->
 <div id="toast" class="fixed bottom-5 right-5 z-50 hidden animate-slide-up">
   <div id="toastBox" class="px-4 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2.5 max-w-xs">
     <span id="toastIcon"></span>
@@ -376,7 +419,22 @@
 // ============================================================
 // STATE & CONFIG
 // ============================================================
-let API_URL = localStorage.getItem('appsScriptUrl') || '';
+// let API_URL = localStorage.getItem('appsScriptUrl') || '';
+// Ganti bagian di bawah ini dengan URL Apps Script Anda yang asli
+const MY_APPS_SCRIPT_URL = "ISI_URL_APPS_SCRIPT_ANDA_DI_SINI"; 
+
+let API_URL = MY_APPS_SCRIPT_URL;
+
+// Pastikan banner API tidak muncul saat halaman dimuat
+window.addEventListener('DOMContentLoaded', () => {
+    const banner = document.getElementById('apiBanner');
+    if (banner) banner.classList.add('hidden');
+    
+    // Inisialisasi data otomatis jika URL tersedia
+    if (API_URL) {
+        refreshAll();
+    }
+});
 let currentPage = 1;
 let totalPages = 1;
 let currentData = [];
@@ -391,14 +449,71 @@ let chartStatus = null;
 document.addEventListener('DOMContentLoaded', () => {
   const savedUrl = localStorage.getItem('appsScriptUrl');
   if (savedUrl) {
-    document.getElementById('apiUrlInput').value = savedUrl;
     API_URL = savedUrl;
+    // Sync semua input fields
+    document.getElementById('apiUrlInput').value = savedUrl;
+    document.getElementById('bannerApiInput').value = savedUrl;
+    // Sembunyikan banner jika URL sudah ada
     document.getElementById('apiBanner').classList.add('hidden');
+    // Tampilkan status koneksi di halaman pengaturan
+    showCurrentApiStatus(savedUrl);
   }
 
   showSection('dashboard');
-  refreshAll();
+  // FIX: Hanya refresh jika API_URL sudah ada
+  if (API_URL) {
+    refreshAll();
+  } else {
+    // Tampilkan pesan yang ramah saat belum ada URL
+    document.getElementById('tableRecent').innerHTML =
+      '<div class="p-8 text-center text-slate-400 text-sm">Konfigurasi URL Apps Script di atas untuk mulai.</div>';
+  }
 });
+
+// ============================================================
+// FIX: Simpan URL dari banner inline
+// ============================================================
+async function saveBannerUrl() {
+  const url = document.getElementById('bannerApiInput').value.trim();
+  if (!url) { showToast('Masukkan URL terlebih dahulu', 'error'); return; }
+  
+  // Sync ke input di halaman pengaturan
+  document.getElementById('apiUrlInput').value = url;
+  
+  // Langsung simpan dan test
+  API_URL = url;
+  localStorage.setItem('appsScriptUrl', url);
+  showToast('Menyimpan dan menghubungkan...', 'success');
+  
+  try {
+    const testUrl = new URL(url);
+    testUrl.searchParams.set('action', 'getStats');
+    const res = await fetch(testUrl.toString());
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('apiBanner').classList.add('hidden');
+      showCurrentApiStatus(url);
+      showToast('Koneksi berhasil! Data dimuat.', 'success');
+      refreshAll();
+    } else {
+      throw new Error(data.message || 'Response tidak valid');
+    }
+  } catch(e) {
+    showToast('Koneksi gagal: ' + e.message, 'error');
+    API_URL = '';
+    localStorage.removeItem('appsScriptUrl');
+  }
+}
+
+function showCurrentApiStatus(url) {
+  const el = document.getElementById('currentApiStatus');
+  const urlEl = document.getElementById('currentApiUrl');
+  if (el && urlEl) {
+    urlEl.textContent = '✓ Terhubung: ' + url;
+    el.classList.remove('hidden');
+    el.classList.add('flex');
+  }
+}
 
 // ============================================================
 // NAVIGATION
@@ -414,14 +529,17 @@ function showSection(name) {
     target.classList.add('animate-fade-in');
   }
 
+  // FIX: Reset semua link, lalu set yang aktif
   document.querySelectorAll('.sidebar-link').forEach(l => {
     l.classList.remove('active');
-    l.classList.add('text-slate-300');
+    if (!l.classList.contains('text-slate-300')) l.classList.add('text-slate-300');
   });
-  const links = document.querySelectorAll('.sidebar-link');
+
+  // Map nama section ke index sidebar link
   const sectionMap = { dashboard: 0, data: 1, pengaturan: 2 };
+  const links = document.querySelectorAll('.sidebar-link');
   const idx = sectionMap[name];
-  if (links[idx]) {
+  if (links[idx] !== undefined) {
     links[idx].classList.add('active');
     links[idx].classList.remove('text-slate-300');
   }
@@ -429,7 +547,11 @@ function showSection(name) {
   const titles = { dashboard: 'Dashboard', data: 'Data Peminjaman', pengaturan: 'Pengaturan API' };
   document.getElementById('pageTitle').textContent = titles[name] || '';
 
-  if (name === 'data') loadData();
+  if (name === 'data' && API_URL) loadData();
+  else if (name === 'data' && !API_URL) {
+    document.getElementById('dataTableWrapper').innerHTML =
+      '<div class="p-10 text-center text-slate-400 text-sm">Konfigurasi URL Apps Script terlebih dahulu di <a href="#" onclick="showSection(\'pengaturan\'); return false;" class="text-brand-500 underline">Pengaturan API</a>.</div>';
+  }
   if (name === 'dashboard') refreshAll();
 
   if (window.innerWidth < 1024) toggleSidebar(true);
@@ -438,9 +560,7 @@ function showSection(name) {
 function toggleSidebar(forceClose) {
   const sb = document.getElementById('sidebar');
   const ov = document.getElementById('sidebarOverlay');
-  
   const isHidden = sb.classList.contains('-translate-x-full');
-  
   if (forceClose === true || !isHidden) {
     sb.classList.add('-translate-x-full');
     ov.classList.add('hidden');
@@ -454,9 +574,14 @@ function toggleSidebar(forceClose) {
 // API CALLS
 // ============================================================
 async function fetchAPI(params = {}) {
-  if (!API_URL) { showToast('URL Apps Script belum dikonfigurasi', 'error'); return null; }
+  if (!API_URL) {
+    showToast('URL Apps Script belum dikonfigurasi', 'error');
+    return null;
+  }
   const url = new URL(API_URL);
-  Object.entries(params).forEach(([k,v]) => { if (v !== undefined && v !== '') url.searchParams.set(k, v); });
+  Object.entries(params).forEach(([k,v]) => {
+    if (v !== undefined && v !== '') url.searchParams.set(k, v);
+  });
   try {
     const res = await fetch(url.toString());
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -504,12 +629,12 @@ async function loadStats() {
   const s = res.stats;
   statsData = s;
   
-  animateNumber('statTotal', s.total);
-  animateNumber('statDipinjam', s.dipinjam);
-  animateNumber('statDikembalikan', s.dikembalikan);
-  animateNumber('statTerlambat', s.terlambat);
+  animateNumber('statTotal', s.total || 0);
+  animateNumber('statDipinjam', s.dipinjam || 0);
+  animateNumber('statDikembalikan', s.dikembalikan || 0);
+  animateNumber('statTerlambat', s.terlambat || 0);
 
-  renderChartBarang(s.byBarang);
+  renderChartBarang(s.byBarang || {});
   renderChartStatus(s);
 }
 
@@ -529,10 +654,22 @@ function animateNumber(id, target) {
 
 function renderChartBarang(byBarang) {
   const ctx = document.getElementById('chartBarang');
+  const emptyEl = document.getElementById('chartBarangEmpty');
   if (!ctx) return;
   if (chartBarang) chartBarang.destroy();
+
   const labels = Object.keys(byBarang);
   const values = Object.values(byBarang);
+
+  // FIX: Tampilkan placeholder jika tidak ada data
+  if (!labels.length || values.every(v => v === 0)) {
+    if (emptyEl) emptyEl.style.display = 'flex';
+    ctx.style.display = 'none';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+  ctx.style.display = 'block';
+
   const colors = ['#0ea5e9','#f59e0b','#10b981','#8b5cf6','#ef4444'];
   chartBarang = new Chart(ctx, {
     type: 'doughnut',
@@ -549,14 +686,26 @@ function renderChartBarang(byBarang) {
 
 function renderChartStatus(s) {
   const ctx = document.getElementById('chartStatus');
+  const emptyEl = document.getElementById('chartStatusEmpty');
   if (!ctx) return;
   if (chartStatus) chartStatus.destroy();
+
+  const total = (s.dipinjam || 0) + (s.dikembalikan || 0) + (s.terlambat || 0);
+  // FIX: Tampilkan placeholder jika tidak ada data
+  if (total === 0) {
+    if (emptyEl) emptyEl.style.display = 'flex';
+    ctx.style.display = 'none';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+  ctx.style.display = 'block';
+
   chartStatus = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: ['Dipinjam', 'Dikembalikan', 'Terlambat'],
       datasets: [{
-        data: [s.dipinjam, s.dikembalikan, s.terlambat],
+        data: [s.dipinjam || 0, s.dikembalikan || 0, s.terlambat || 0],
         backgroundColor: ['#f59e0b','#10b981','#ef4444'],
         borderRadius: 8, borderSkipped: false
       }]
@@ -564,7 +713,10 @@ function renderChartStatus(s) {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#f1f5f9' } },
+        x: { grid: { display: false } }
+      }
     }
   });
 }
@@ -573,9 +725,10 @@ function renderChartStatus(s) {
 // RECENT TABLE
 // ============================================================
 async function loadRecent() {
+  if (!API_URL) return;
   const res = await fetchAPI({ action: 'getData', limit: 5, page: 1 });
   const wrapper = document.getElementById('tableRecent');
-  if (!res || !res.success || !res.data.length) {
+  if (!res || !res.success || !res.data || !res.data.length) {
     wrapper.innerHTML = '<div class="p-8 text-center text-slate-400 text-sm">Belum ada data</div>';
     return;
   }
@@ -586,6 +739,7 @@ async function loadRecent() {
 // FULL DATA TABLE
 // ============================================================
 async function loadData() {
+  if (!API_URL) return;
   const search = document.getElementById('searchInput').value;
   const status = document.getElementById('filterStatus').value;
   const barang = document.getElementById('filterBarang').value;
@@ -593,19 +747,22 @@ async function loadData() {
   wrapper.innerHTML = '<div class="p-10 text-center w-full"><div class="inline-block w-6 h-6 border-2 border-brand-400 border-t-transparent rounded-full animate-spin"></div></div>';
 
   const res = await fetchAPI({ action: 'getData', search, status, barang, page: currentPage, limit: 15 });
-  if (!res || !res.success) { wrapper.innerHTML = '<div class="p-10 text-center text-slate-400 text-sm w-full">Gagal memuat data</div>'; return; }
+  if (!res || !res.success) {
+    wrapper.innerHTML = '<div class="p-10 text-center text-slate-400 text-sm w-full">Gagal memuat data. Periksa koneksi atau URL Apps Script.</div>';
+    return;
+  }
 
-  currentData = res.data;
+  currentData = res.data || [];
   totalPages = res.totalPages || 1;
 
-  if (!res.data.length) {
+  if (!currentData.length) {
     wrapper.innerHTML = '<div class="p-10 text-center text-slate-400 text-sm w-full">Tidak ada data ditemukan</div>';
     document.getElementById('paginationInfo').textContent = '';
     document.getElementById('pageInfo').textContent = '';
     return;
   }
 
-  wrapper.innerHTML = buildTable(res.data, false);
+  wrapper.innerHTML = buildTable(currentData, false);
   document.getElementById('paginationInfo').textContent = `${res.total} data • Halaman ${res.page} dari ${res.totalPages}`;
   document.getElementById('pageInfo').textContent = `${res.page} / ${res.totalPages}`;
   document.getElementById('prevBtn').disabled = currentPage <= 1;
@@ -627,8 +784,12 @@ function buildTable(data, compact) {
 
   data.forEach((row, i) => {
     const status = row['Status'] || 'Dipinjam';
-    const statusClass = status === 'Dikembalikan' ? 'bg-emerald-50 text-emerald-700' : status === 'Terlambat' ? 'bg-red-50 text-red-700' : 'bg-orange-50 text-orange-700';
-    const tgl = row['Tanggal Peminjaman Asset'] ? new Date(row['Tanggal Peminjaman Asset']).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+    const statusClass = status === 'Dikembalikan' ? 'bg-emerald-50 text-emerald-700'
+      : status === 'Terlambat' ? 'bg-red-50 text-red-700'
+      : 'bg-orange-50 text-orange-700';
+    const tgl = row['Tanggal Peminjaman Asset']
+      ? new Date(row['Tanggal Peminjaman Asset']).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+      : '—';
     const rowIdx = row._rowIndex;
 
     html += `<tr class="table-row border-b border-slate-50 cursor-pointer w-full" onclick='showDetail(${JSON.stringify(JSON.stringify(row))})'>`;
@@ -646,10 +807,12 @@ function buildTable(data, compact) {
     if (!compact) {
       html += `<td class="px-4 py-3 whitespace-nowrap" onclick="event.stopPropagation()">
         <div class="flex items-center justify-center gap-1.5">
-          <button onclick="openStatusModal(${rowIdx},'${status}')" title="Update Status" class="w-7 h-7 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-600 flex items-center justify-center transition-all">
+          <button onclick="openStatusModal(${rowIdx},'${status}')" title="Update Status"
+            class="w-7 h-7 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-600 flex items-center justify-center transition-all">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
           </button>
-          <button onclick="openDeleteModal(${rowIdx})" title="Hapus" class="w-7 h-7 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-all">
+          <button onclick="openDeleteModal(${rowIdx})" title="Hapus"
+            class="w-7 h-7 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-all">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
           </button>
         </div>
@@ -684,7 +847,7 @@ function resetFilter() {
 }
 
 // ============================================================
-// MODALS LOGIC
+// MODALS
 // ============================================================
 function openStatusModal(rowIdx, currentStatus) {
   document.getElementById('modal_row').value = rowIdx;
@@ -727,14 +890,16 @@ async function confirmDelete() {
 }
 
 // ============================================================
-// SHOW DETAIL (DENGAN RENDER GAMBAR)
+// DETAIL MODAL
 // ============================================================
 function showDetail(rowStr) {
   let row;
   try { row = JSON.parse(rowStr); } catch(e) { return; }
   const skip = ['_rowIndex'];
   const status = row['Status'] || 'Dipinjam';
-  const statusClass = status === 'Dikembalikan' ? 'bg-emerald-50 text-emerald-700' : status === 'Terlambat' ? 'bg-red-50 text-red-700' : 'bg-orange-50 text-orange-700';
+  const statusClass = status === 'Dikembalikan' ? 'bg-emerald-50 text-emerald-700'
+    : status === 'Terlambat' ? 'bg-red-50 text-red-700'
+    : 'bg-orange-50 text-orange-700';
   
   let textHtml = '';
   let imageHtml = '';
@@ -743,7 +908,6 @@ function showDetail(rowStr) {
     if (skip.includes(k) || !k || !v) return;
     let val = v;
     
-    // Deteksi apakah field ini mengandung kata kunci foto/gambar atau URL-nya adalah gambar
     const keyLower = k.toLowerCase();
     const isImageKey = keyLower.includes('foto') || keyLower.includes('gambar') || keyLower.includes('bukti') || keyLower.includes('dokumen');
     const isImageUrl = typeof v === 'string' && (
@@ -755,75 +919,54 @@ function showDetail(rowStr) {
       isImageKey
     );
 
-    // Jika ini adalah gambar, buat tag <img>
     if (isImageUrl && typeof v === 'string') {
       let imgSrc = v;
       let openUrl = v;
       let fileId = null;
 
-      // ── Google Drive: ekstrak file ID ──────────────────────────
-      // Format 1: https://drive.google.com/open?id=FILE_ID
       if (v.includes('drive.google.com/open?id=')) {
         const m = v.match(/[?&]id=([^&]+)/);
         if (m) fileId = m[1];
-      }
-      // Format 2: https://drive.google.com/file/d/FILE_ID/...
-      else if (v.includes('drive.google.com/file/d/')) {
+      } else if (v.includes('drive.google.com/file/d/')) {
         const m = v.match(/file\/d\/([^\/\?]+)/);
         if (m) fileId = m[1];
-      }
-      // Format 3: https://drive.google.com/uc?id=FILE_ID
-      else if (v.includes('drive.google.com/uc') || v.includes('drive.google.com/thumbnail')) {
+      } else if (v.includes('drive.google.com/uc') || v.includes('drive.google.com/thumbnail')) {
         const m = v.match(/[?&]id=([^&]+)/);
         if (m) fileId = m[1];
-      }
-      // Format 4: share link  https://drive.google.com/...?usp=sharing  (sudah ada id di path)
-      else if (v.includes('drive.google.com') && v.includes('usp=sharing')) {
+      } else if (v.includes('drive.google.com') && v.includes('usp=sharing')) {
         const m = v.match(/\/d\/([^\/\?]+)/);
         if (m) fileId = m[1];
       }
 
       if (fileId) {
-        // Gunakan thumbnail endpoint — tidak kena CORS, selalu bisa di-load
         imgSrc  = `https://drive.google.com/thumbnail?id=${fileId}&sz=w640`;
         openUrl = `https://drive.google.com/file/d/${fileId}/view`;
       }
 
-      // ── Render ─────────────────────────────────────────────────
-      const uniqueId = 'img_' + Math.random().toString(36).substr(2, 9);
       imageHtml += `<div class="mt-5 mb-2">
          <span class="text-slate-500 font-semibold text-xs uppercase tracking-wide block mb-2">${k}</span>
          <a href="${openUrl}" target="_blank" rel="noopener noreferrer" title="Klik untuk melihat ukuran penuh">
-           <img id="${uniqueId}"
-                src="${imgSrc}"
-                alt="${k}"
-                crossorigin="anonymous"
-                referrerpolicy="no-referrer"
+           <img src="${imgSrc}" alt="${k}" crossorigin="anonymous" referrerpolicy="no-referrer"
                 class="w-full h-auto max-h-64 object-cover rounded-xl border border-slate-200 shadow-sm hover:opacity-90 transition-opacity cursor-pointer"
                 onerror="handleImgError(this, '${imgSrc}', '${fileId || ''}', '${openUrl}')"/>
          </a>
          <p class="text-xs text-slate-400 mt-1">🔗 <a href="${openUrl}" target="_blank" rel="noopener noreferrer" class="underline hover:text-brand-500">Buka di tab baru</a></p>
       </div>`;
-      return; // Skip teks biasa untuk field ini
+      return;
     }
 
-    // Format badge untuk status
     if (k === 'Status') {
       val = `<span class="status-badge px-2 py-0.5 rounded-full ${statusClass}">${v}</span>`;
-    } 
-    // Format tanggal
-    else if (k === 'Timestamp' || k === 'Tanggal Peminjaman Asset' || k === 'Tanggal Kembali') {
+    } else if (k === 'Timestamp' || k === 'Tanggal Peminjaman Asset' || k === 'Tanggal Kembali') {
       val = v ? new Date(v).toLocaleString('id-ID') : '—';
     }
 
-    // Gabungkan baris informasi
     textHtml += `<div class="flex gap-3 py-2 border-b border-slate-50 last:border-0 w-full">
       <span class="text-slate-400 text-xs w-[40%] flex-shrink-0 pt-0.5">${k}</span>
       <span class="text-slate-700 font-medium text-xs flex-1 break-words">${val}</span>
     </div>`;
   });
 
-  // Render teks terlebih dahulu, lalu gambar di bagian bawah
   document.getElementById('detailContent').innerHTML = textHtml + imageHtml;
   openModal('modalDetail');
 }
@@ -841,7 +984,7 @@ function closeModal(id) {
 }
 
 // ============================================================
-// PENGATURAN API
+// PENGATURAN API (halaman pengaturan)
 // ============================================================
 async function saveApiUrl() {
   const url = document.getElementById('apiUrlInput').value.trim();
@@ -862,7 +1005,10 @@ async function saveApiUrl() {
     if (data.success) {
       localStorage.setItem('appsScriptUrl', url);
       API_URL = url;
+      // Sync ke banner input juga
+      document.getElementById('bannerApiInput').value = url;
       document.getElementById('apiBanner').classList.add('hidden');
+      showCurrentApiStatus(url);
       resultEl.className = 'block rounded-xl bg-emerald-50 text-emerald-700 text-sm p-3.5 border border-emerald-200';
       resultEl.textContent = '✓ Koneksi berhasil! URL disimpan. Data akan dimuat otomatis.';
       showToast('Koneksi berhasil!', 'success');
@@ -880,11 +1026,12 @@ async function saveApiUrl() {
 // EXPORT CSV
 // ============================================================
 async function exportCSV() {
+  if (!API_URL) { showToast('URL Apps Script belum dikonfigurasi', 'error'); return; }
   const search = document.getElementById('searchInput').value;
   const status = document.getElementById('filterStatus').value;
   const barang = document.getElementById('filterBarang').value;
   const res = await fetchAPI({ action: 'getData', search, status, barang, limit: 9999, page: 1 });
-  if (!res || !res.data.length) { showToast('Tidak ada data untuk di-export', 'error'); return; }
+  if (!res || !res.data || !res.data.length) { showToast('Tidak ada data untuk di-export', 'error'); return; }
   
   const skip = ['_rowIndex'];
   const keys = Object.keys(res.data[0]).filter(k => !skip.includes(k));
@@ -925,27 +1072,23 @@ function showToast(msg, type = 'success') {
 }
 
 // ============================================================
-// HELPER: FALLBACK GAMBAR (URUTAN PRIORITAS)
+// FALLBACK GAMBAR
 // ============================================================
 function handleImgError(imgEl, originalSrc, fileId, openUrl) {
-  // Cegah infinite loop
   if (imgEl._fallbackAttempt === undefined) imgEl._fallbackAttempt = 0;
   imgEl._fallbackAttempt++;
 
   if (fileId) {
     if (imgEl._fallbackAttempt === 1) {
-      // Coba uc?export=view (metode lama)
       imgEl.src = `https://drive.google.com/uc?export=view&id=${fileId}`;
       return;
     }
     if (imgEl._fallbackAttempt === 2) {
-      // Coba thumbnail ukuran lebih kecil
       imgEl.src = `https://drive.google.com/thumbnail?id=${fileId}&sz=w320`;
       return;
     }
   }
 
-  // Semua fallback gagal → tampilkan pesan dengan link manual
   const container = imgEl.closest('a') ? imgEl.closest('a').parentElement : imgEl.parentElement;
   if (container) {
     container.innerHTML = `
