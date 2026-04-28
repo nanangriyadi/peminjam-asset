@@ -1,5 +1,11 @@
 # 📦 AssetTrack — Admin Dashboard Peminjaman Barang
 
+<img width="1911" height="908" alt="image" src="https://github.com/user-attachments/assets/4af23610-f918-4029-b921-0f14329a1147" />
+
+<img width="1905" height="911" alt="image" src="https://github.com/user-attachments/assets/4c6ce679-a2b3-4316-a7b5-fe3ed56defe3" />
+
+
+
 Dashboard admin berbasis HTML murni untuk manajemen peminjaman aset/barang, terintegrasi dengan **Google Sheets** via **Google Apps Script** sebagai backend, dan mendukung preview foto dari **Google Drive**.
 
 ---
