@@ -53,7 +53,7 @@ Dashboard admin berbasis HTML murni untuk manajemen peminjaman aset/barang, teri
 
 ### 2. Jalankan Dashboard
 
-1. Buka file `index2.html` di browser (tidak perlu server)
+1. Buka file `index.html` di browser (tidak perlu server)
 2. Klik menu **Pengaturan API** di sidebar kiri
 3. Tempel URL Apps Script, klik **Simpan & Uji Koneksi**
 4. Jika berhasil, dashboard akan langsung memuat data
